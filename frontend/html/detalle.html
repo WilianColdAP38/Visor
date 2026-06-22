@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor - Detalle</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/components.css">
+    <link rel="stylesheet" href="../estilos/detalle.css">
+</head>
+
+<body>
+
+    <!-- Header principal identico al de index, lo pinta header.js segun haya o no token -->
+    <header class="header-principal">
+
+        <a href="index.html" class="marca header-logo">
+            <h1>Visor</h1>
+        </a>
+
+        <search class="buscador" role="search">
+            <label for="campo-busqueda" class="sr-solo">Buscar pines</label>
+            <input type="search" id="campo-busqueda" placeholder="Buscar ideas, tags o titulos"
+                autocomplete="off">
+        </search>
+
+        <nav class="nav-sesion" aria-label="Acciones de usuario">
+            <ul id="acciones-auth" class="acciones-auth"></ul>
+            <div id="menu-usuario" class="menu-usuario" hidden></div>
+        </nav>
+
+    </header>
+
+    <!-- Contenido principal del detalle -->
+    <main class="contenido-principal detalle-main">
+
+        <!-- mensaje 404, oculto por defecto, lo muestro si el pin no existe -->
+        <section class="detalle-404" id="detalle-404" hidden>
+            <h2>Publicacion no encontrada</h2>
+            <p>El pin que buscas no existe o fue eliminado.</p>
+            <a href="index.html" class="btn-primario">Volver al inicio</a>
+        </section>
+
+        <!-- contenido real del detalle, oculto hasta que cargue -->
+        <article class="detalle-card" id="detalle-card" hidden>
+
+            <figure class="detalle-imagen">
+                <img id="detalle-img" src="" alt="">
+            </figure>
+
+            <div class="detalle-info">
+
+                <header class="detalle-encabezado">
+                    <ul class="detalle-tags" id="detalle-tags"></ul>
+                    <h2 id="detalle-titulo"></h2>
+                    <p class="detalle-descripcion" id="detalle-descripcion"></p>
+                </header>
+
+                <section class="detalle-autor" aria-label="Autor de la publicacion">
+                    <a class="autor-avatar" id="autor-avatar" href="#" aria-label="Perfil del autor"></a>
+                    <div class="autor-info">
+                        <a class="autor-usuario" id="autor-usuario" href="#"></a>
+                        <p class="autor-fecha" id="autor-fecha"></p>
+                    </div>
+                </section>
+
+                <div class="detalle-acciones">
+                    <button type="button" class="btn-like" id="btn-like" aria-pressed="false">
+                        <span class="like-icono" id="like-icono">&#9825;</span>
+                        <span class="like-contador" id="like-contador">0</span>
+                    </button>
+                </div>
+
+                <section class="detalle-comentarios" aria-label="Comentarios">
+                    <h3 id="comentarios-titulo">Comentarios</h3>
+
+                    <form class="form-comentario" id="form-comentario" hidden>
+                        <label for="input-comentario" class="visualmente-oculto">Tu comentario</label>
+                        <input type="text" id="input-comentario" name="comentario"
+                            placeholder="Escribe un comentario..." maxlength="300" autocomplete="off">
+                        <button type="submit" class="btn-primario" id="btn-enviar-comentario" disabled>Enviar</button>
+                        <p class="contador-chars" id="contador-chars">0 / 300</p>
+                    </form>
+
+                    <p class="aviso-login" id="aviso-login" hidden>
+                        <a href="login.html">Inicia sesion</a> para comentar.
+                    </p>
+
+                    <ul class="lista-comentarios" id="lista-comentarios"></ul>
+                </section>
+
+            </div>
+        </article>
+
+    </main>
+
+    <footer class="footer-principal">
+        <p>Visor &copy; 2026 - Proyecto Integrador UIDE</p>
+    </footer>
+
+    <script src="../js/lib/jquery-3.7.1.min.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/detalle.js"></script>
+
+</body>
+
+</html>

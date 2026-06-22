@@ -1,0 +1,8 @@
+fastapi[standard]
+sqlmodel
+pydantic[email]
+pydantic-settings
+python-jose[cryptography]
+bcrypt
+boto3
+python-multipart

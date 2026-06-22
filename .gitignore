@@ -1,0 +1,53 @@
+# ============================
+# Python
+# ============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# entornos virtuales, jamas se suben al repo
+venv/
+env/
+.venv/
+ENV/
+
+# ============================
+# Variables de entorno (CRITICO)
+# ============================
+# el .env tiene la SECRET_KEY y credenciales de AWS, NUNCA va al repo
+.env
+.env.local
+.env.*.local
+
+# ============================
+# Base de datos local
+# ============================
+# la BD se genera con seed.py, no debe versionarse
+*.sqlite3
+*.sqlite
+*.db
+db.sqlite3-journal
+
+# ============================
+# IDE
+# ============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================
+# Sistema operativo
+# ============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================
+# Logs y temporales
+# ============================
+*.log
+*.tmp
+.cache/
+

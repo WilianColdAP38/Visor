@@ -1,0 +1,64 @@
+/* Estilos especificos del feed (index.html) */
+/* El header, dropdown, tarjetas base y chips estan en components.css */
+
+.contenido-principal {
+    flex: 1;
+    width: 100%;
+    padding: 1.5rem 1rem;
+}
+
+/* Barra horizontal de chips de categorias */
+.barra-categorias {
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.25rem;
+}
+
+.lista-categorias {
+    display: flex;
+    gap: 0.5rem;
+    width: max-content;
+}
+
+/* GALERIA MASONRY con CSS columns */
+
+.lista-pines {
+    column-count: 2;
+    column-gap: 1rem;
+}
+
+.lista-pines > li {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+}
+
+/* MEDIA QUERIES */
+
+@media (min-width: 600px) {
+    .contenido-principal {
+        padding: 1.5rem;
+    }
+
+    .lista-pines {
+        column-count: 3;
+    }
+}
+
+@media (min-width: 960px) {
+    .contenido-principal {
+        padding: 2rem;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .lista-pines {
+        column-count: 4;
+        column-gap: 1.25rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    .lista-pines {
+        column-count: 5;
+    }
+}

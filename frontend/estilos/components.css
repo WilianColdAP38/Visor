@@ -1,0 +1,364 @@
+/* Componentes reutilizables: header, dropdown, tarjeta, chips, botones de estado */
+/* Todas las paginas cargan este archivo despues de base.css */
+
+/* puente de variables: este archivo usa nombres viejos, base.css define los nuevos */
+/* mapeo los viejos a los nuevos para no reescribir cada regla */
+:root {
+    --fondo-tarjeta: var(--color-surface);
+    --fondo-input: var(--color-bg);
+    --fondo-hover: var(--color-surface-hover);
+    --texto: var(--color-text);
+    --texto-suave: var(--color-muted);
+    --acento: var(--color-primary);
+    --acento-hover: var(--color-primary-dark);
+    --borde: var(--color-border);
+    --sombra: var(--shadow-sm);
+    --sombra-hover: var(--shadow-md);
+    --radio: var(--radius-md);
+    --radio-input: var(--radius-full);
+}
+
+
+
+/* HEADER PRINCIPAL */
+
+.header-principal {
+    background-color: var(--fondo-tarjeta);
+    border-bottom: 1px solid var(--borde);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.marca h1 {
+    color: var(--acento);
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+/* Buscador semantico con <search> */
+.buscador {
+    flex: 1;
+    max-width: 800px;
+}
+
+.buscador input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    background-color: var(--fondo-input);
+    border: 2px solid transparent;
+    border-radius: var(--radio-input);
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--texto);
+    transition: border-color var(--transicion), background-color var(--transicion);
+}
+
+.buscador input:focus {
+    outline: none;
+    background-color: var(--fondo-tarjeta);
+    border-color: var(--acento);
+}
+
+/* NAV DE SESION */
+
+.nav-sesion {
+    display: flex;
+    align-items: center;
+}
+
+.acciones-auth {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* DROPDOWN DEL USUARIO usando <details> nativo */
+
+/* El contenedor del menu usuario solo ocupa el ancho del avatar (40px) */
+/* Sin esto el div se estira y el dropdown absoluto se ancla mal */
+.menu-usuario {
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
+
+/* El details tambien se restringe al tamano del avatar */
+.dropdown-usuario {
+    position: static;
+    width: 40px;
+    height: 40px;
+}
+
+/* El summary contiene el avatar y debe medir lo mismo */
+.dropdown-summary {
+    list-style: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+.dropdown-summary::-webkit-details-marker {
+    display: none;
+}
+
+.avatar-header {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--acento) 0%, var(--acento-hover) 100%);
+    color: var(--fondo-tarjeta);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    overflow: hidden;
+    border: 2px solid var(--borde);
+    transition: border-color var(--transicion);
+    box-sizing: border-box;
+}
+
+.avatar-header:hover {
+    border-color: var(--acento);
+}
+
+.avatar-header img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* El ul desplegable se ancla al .menu-usuario que es position: relative */
+.lista-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 220px;
+    background-color: var(--fondo-tarjeta);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    box-shadow: var(--sombra-hover);
+    padding: 0.5rem 0;
+    z-index: 200;
+}
+
+.dropdown-cabecera {
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.dropdown-cabecera strong {
+    font-size: 0.95rem;
+    color: var(--texto);
+}
+
+.dropdown-usuario-handle {
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+}
+
+.lista-dropdown hr {
+    border: none;
+    border-top: 1px solid var(--borde);
+    margin: 0;
+}
+
+.lista-dropdown li a,
+.lista-dropdown li button {
+    display: block;
+    width: 100%;
+    padding: 0.65rem 1rem;
+    text-align: left;
+    background: transparent;
+    border: none;
+    font-size: 0.9rem;
+    color: var(--texto);
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color var(--transicion);
+}
+
+.lista-dropdown li a:hover,
+.lista-dropdown li button:hover {
+    background-color: var(--fondo-hover);
+}
+
+.btn-salir {
+    color: var(--acento) !important;
+    font-weight: 600;
+}
+
+/* CHIPS REUTILIZABLES (categorias, tags, filtros) */
+
+.chip-categoria {
+    padding: 0.5rem 1rem;
+    background-color: var(--fondo-tarjeta);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-input);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--texto);
+    font-family: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--transicion), border-color var(--transicion);
+}
+
+.chip-categoria:hover {
+    background-color: var(--fondo-hover);
+}
+
+.chip-categoria[aria-pressed="true"] {
+    background-color: var(--texto);
+    color: var(--fondo-tarjeta);
+    border-color: var(--texto);
+}
+
+/* TARJETA DE PIN base, reutilizable en feed y perfil */
+
+.tarjeta-pin {
+    background-color: var(--fondo-tarjeta);
+    border-radius: var(--radio);
+    overflow: hidden;
+    box-shadow: var(--sombra);
+    transition: transform var(--transicion), box-shadow var(--transicion);
+}
+
+.tarjeta-pin:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+}
+
+.tarjeta-pin-enlace {
+    display: block;
+    color: inherit;
+}
+
+.tarjeta-pin-imagen {
+    width: 100%;
+    display: block;
+    background-color: var(--fondo-input);
+}
+
+.tarjeta-pin-header {
+    padding: 0.75rem 0.75rem 0.25rem;
+}
+
+.tarjeta-pin-header h2 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--texto);
+    line-height: 1.3;
+}
+
+.tarjeta-pin-footer {
+    padding: 0.5rem 0.75rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.tarjeta-pin-autor {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+    overflow: hidden;
+}
+
+.tarjeta-pin-autor-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--acento) 0%, var(--acento-hover) 100%);
+    color: var(--fondo-tarjeta);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.tarjeta-pin-autor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tarjeta-pin-autor-nombre {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tarjeta-pin-contadores {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+    flex-shrink: 0;
+}
+
+.tarjeta-pin-contadores span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+/* ESTADOS DE MENSAJE (cargando, vacio, error) */
+
+.estado-mensaje {
+    text-align: center;
+    color: var(--texto-suave);
+    padding: 2rem 1rem;
+    font-size: 0.95rem;
+}
+
+/* FOOTER del sitio */
+
+.footer-principal {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    background-color: var(--fondo-tarjeta);
+    border-top: 1px solid var(--borde);
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+    margin-top: 2rem;
+}
+
+/* MEDIA QUERIES del header */
+
+@media (min-width: 600px) {
+    .header-principal {
+        padding: 0.75rem 1.5rem;
+    }
+}
+
+@media (min-width: 960px) {
+    .header-principal {
+        padding: 0.75rem 2rem;
+    }
+}
+
+
+/* Utilidad de accesibilidad: oculta visualmente pero accesible para screen readers */
+.sr-solo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}

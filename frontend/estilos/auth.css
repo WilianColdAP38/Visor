@@ -1,0 +1,177 @@
+/* estilos especificos de login y register, ambas comparten el mismo layout */
+
+/* esta pagina no usa el header fijo, asi que centro todo verticalmente */
+.auth-page {
+    background-color: var(--color-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+/* tarjeta central donde vive el form */
+.auth-container {
+    background-color: var(--color-surface);
+    width: 100%;
+    max-width: 460px;
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+
+.auth-logo {
+    display: inline-block;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-text);
+    letter-spacing: -0.5px;
+    margin-bottom: 24px;
+}
+
+.auth-logo span {
+    color: var(--color-primary);
+}
+
+.auth-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.auth-subtitle {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+}
+
+/* mensaje de exito o error que aparece arriba del form */
+.form-message {
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.form-message.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--color-danger);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.form-message.success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--color-success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* form en si */
+.auth-form {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 14px;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color var(--transicion), box-shadow var(--transicion);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* barra que muestra la fuerza del password mientras lo escriben */
+.password-strength {
+    height: 4px;
+    background-color: var(--color-border);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0%;
+    transition: width var(--transicion), background-color var(--transicion);
+}
+
+.password-strength-text {
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+}
+
+/* caja con el compromiso etico, aporta al componente de etica */
+.ethics-box {
+    background-color: var(--color-bg);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+}
+
+.ethics-box h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.ethics-box ul {
+    list-style: disc;
+    padding-left: 20px;
+    color: var(--color-muted);
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* boton primario en version ancha para forms */
+.btn-full {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    margin-top: 8px;
+}
+
+/* footer del form con el link cruzado entre login y registro */
+.auth-footer {
+    margin-top: 24px;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+}
+
+.auth-link {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.auth-link:hover {
+    color: var(--color-primary-light);
+    text-decoration: underline;
+}

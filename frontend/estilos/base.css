@@ -1,0 +1,286 @@
+/* variables, reset, header y footer compartidos por todas las paginas */
+
+:root {
+
+    /* paleta indigo nocturno */
+    --color-bg: #0f1115;
+    --color-surface: #1a1d24;
+    --color-surface-hover: #242830;
+
+    --color-text: #f5f5f7;
+    --color-muted: #9ca3af;
+
+    --color-primary: #6366f1;
+    --color-primary-dark: #4f46e5;
+    --color-primary-light: #818cf8;
+
+    --color-border: #2a2d36;
+
+    /* estados, los uso para alertas y mensajes de error */
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 22px;
+    --radius-full: 9999px;
+
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 8px 24px rgba(99, 102, 241, 0.15);
+
+    --max-width: 1400px;
+    --header-height: 72px;
+
+    --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+    --transicion: 0.2s ease;
+}
+
+/* reset universal */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* el atributo hidden debe ganarle a los display de los componentes */
+/* sin esto un elemento con display flex se sigue viendo aunque tenga hidden */
+[hidden] {
+    display: none !important;
+}
+
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.5;
+    min-height: 100vh;
+    /* uso flex column para empujar el footer al fondo cuando hay poco contenido */
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: inherit;
+}
+
+/* utilidad para labels que necesito por accesibilidad pero no quiero mostrar */
+.visualmente-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+/* HEADER PRINCIPAL */
+
+/* header fijo arriba, queda visible siempre al hacer scroll */
+.header-principal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    gap: 16px;
+}
+
+/* variante para login y registro, centra el logo y oculta la zona derecha */
+.header-principal.header-auth {
+    justify-content: center;
+}
+
+.header-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text);
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+}
+
+.header-logo span {
+    color: var(--color-primary);
+}
+
+/* zona derecha del header, contiene botones de sesion o el menu del usuario */
+.header-derecha {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* menu del usuario logueado, avatar circular con dropdown */
+.menu-usuario {
+    position: relative;
+    cursor: pointer;
+}
+
+.usuario-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color var(--transicion);
+}
+
+.usuario-avatar:hover {
+    border-color: var(--color-primary-light);
+}
+
+.usuario-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* dropdown que se abre al click en el avatar */
+.menu-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    min-width: 200px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* clase que aplica js cuando el usuario hace click en el avatar */
+.menu-dropdown.activo {
+    display: flex;
+}
+
+.dropdown-item {
+    padding: 12px 16px;
+    font-weight: 500;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    transition: background-color var(--transicion);
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background-color: var(--color-surface-hover);
+    color: var(--color-primary-light);
+}
+
+.dropdown-item.peligro {
+    color: var(--color-danger);
+}
+
+/* BOTONES REUTILIZABLES */
+
+.btn-primario {
+    padding: 10px 18px;
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color var(--transicion);
+}
+
+.btn-primario:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.btn-secundario {
+    padding: 10px 18px;
+    background-color: transparent;
+    color: var(--color-text);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color var(--transicion);
+}
+
+.btn-secundario:hover {
+    background-color: var(--color-surface-hover);
+}
+
+/* CONTENIDO PRINCIPAL */
+
+/* deja espacio arriba para que el header fijo no tape el contenido */
+.contenido-principal {
+    flex: 1;
+    padding-top: calc(var(--header-height) + 24px);
+    padding-bottom: 40px;
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+/* FOOTER */
+
+.footer-principal {
+    background-color: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+    padding: 20px 24px;
+    color: var(--color-muted);
+    font-size: 0.85rem;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .header-principal {
+        padding: 0 16px;
+    }
+    .contenido-principal {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-secundario,
+    .btn-primario {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+}

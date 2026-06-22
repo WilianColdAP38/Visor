@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor - Crear cuenta</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/auth.css">
+</head>
+
+<body class="auth-page">
+
+    <main class="auth-container">
+
+        <a href="index.html" class="auth-logo">Vi<span>sor</span></a>
+
+        <h1 class="auth-title">Crea tu cuenta en Visor</h1>
+        <p class="auth-subtitle">Unete a la plataforma visual de descubrimiento de ideas</p>
+
+        <div id="formMessage" class="form-message" style="display: none;"></div>
+
+        <form id="registerForm" class="auth-form">
+
+            <div class="form-grupo">
+                <label for="nombre" class="form-label">Nombre completo</label>
+                <input type="text" id="nombre" class="form-control" required placeholder="Ej. Elian Jami">
+            </div>
+
+            <div class="form-grupo">
+                <label for="usuario" class="form-label">Nombre de usuario</label>
+                <input type="text" id="usuario" class="form-control" required placeholder="Ej. elianjami">
+            </div>
+
+            <div class="form-grupo">
+                <label for="email" class="form-label">Correo electronico</label>
+                <input type="email" id="email" class="form-control" required placeholder="correo@ejemplo.com">
+            </div>
+
+            <div class="form-grupo">
+                <label for="password" class="form-label">Contrasena</label>
+                <input type="password" id="password" class="form-control" required minlength="8"
+                    placeholder="Minimo 8 caracteres">
+                <div class="password-strength">
+                    <div id="passwordStrengthBar" class="password-strength-bar"></div>
+                </div>
+                <small id="passwordStrengthText" class="password-strength-text"></small>
+            </div>
+
+            <div class="form-grupo">
+                <label for="confirmPassword" class="form-label">Confirmar contrasena</label>
+                <input type="password" id="confirmPassword" class="form-control" required minlength="8"
+                    placeholder="Repite tu contrasena">
+                <small id="confirmPasswordText" class="password-strength-text"></small>
+            </div>
+
+            <section class="ethics-box">
+                <h4>Compromiso etico Visor</h4>
+                <ul>
+                    <li>No subiras contenido ofensivo o ilegal</li>
+                    <li>Respetaras los derechos de autor de terceros</li>
+                    <li>No publicaras informacion privada ajena</li>
+                    <li>Tu contenido puede pasar por revision antes de ser publico</li>
+                </ul>
+            </section>
+
+            <button type="submit" class="btn-primario btn-full">Crear cuenta</button>
+
+        </form>
+
+        <p class="auth-footer">
+            Ya tienes cuenta? <a href="login.html" class="auth-link">Inicia sesion</a>
+        </p>
+
+    </main>
+
+    <script src="../js/lib/jquery-3.7.1.min.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+
+</html>

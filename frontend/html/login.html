@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor - Iniciar sesion</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/auth.css">
+</head>
+
+<body class="auth-page">
+
+    <main class="auth-container">
+
+        <a href="index.html" class="auth-logo">Vi<span>sor</span></a>
+
+        <h1 class="auth-title">Bienvenido de nuevo</h1>
+        <p class="auth-subtitle">Ingresa tus credenciales para seguir explorando ideas</p>
+
+        <div id="formMessage" class="form-message" style="display: none;"></div>
+
+        <form id="loginForm" class="auth-form">
+
+            <div class="form-grupo">
+                <label for="email" class="form-label">Correo electronico</label>
+                <input type="email" id="email" class="form-control" required placeholder="correo@ejemplo.com">
+            </div>
+
+            <div class="form-grupo">
+                <label for="password" class="form-label">Contrasena</label>
+                <input type="password" id="password" class="form-control" required placeholder="Tu contrasena">
+            </div>
+
+            <button type="submit" class="btn-primario btn-full">Iniciar sesion</button>
+
+        </form>
+
+        <p class="auth-footer">
+            No tienes cuenta? <a href="register.html" class="auth-link">Registrate</a>
+        </p>
+
+    </main>
+
+    <script src="../js/lib/jquery-3.7.1.min.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+
+</html>

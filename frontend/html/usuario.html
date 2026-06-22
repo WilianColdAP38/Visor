@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor - Perfil</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/components.css">
+    <link rel="stylesheet" href="../estilos/usuario.css">
+</head>
+
+<body>
+
+    <!-- Header principal identico al de index, lo pinta header.js segun haya o no token -->
+    <header class="header-principal">
+
+        <a href="index.html" class="marca">
+            <h1>Visor</h1>
+        </a>
+
+        <!-- Nav de acciones de sesion, el contenido lo pinta header.js -->
+        <nav class="nav-sesion" aria-label="Acciones de usuario">
+            <ul id="acciones-auth" class="acciones-auth"></ul>
+            <div id="menu-usuario" class="menu-usuario" hidden></div>
+        </nav>
+
+    </header>
+
+    <!-- Contenido principal del perfil -->
+    <main class="contenido-principal perfil-main">
+
+        <!-- estado de carga, visible hasta que llegan los datos del usuario -->
+        <p id="estado-cargando" class="estado-mensaje">Cargando perfil...</p>
+
+        <!-- 404, se muestra si el usuario no existe -->
+        <section class="perfil-404" id="perfil-404" hidden>
+            <h2>Usuario no encontrado</h2>
+            <p>El perfil que buscas no existe o fue eliminado.</p>
+            <a href="index.html" class="btn-primario">Volver al inicio</a>
+        </section>
+
+        <!-- contenido real del perfil, oculto hasta que cargue -->
+        <section id="perfil-contenido" hidden>
+
+            <!-- cabecera con avatar, nombre, handle, bio y metricas -->
+            <section class="perfil-cabecera" aria-label="Datos del usuario">
+                <div class="perfil-avatar" id="perfil-avatar"></div>
+                <h2 class="perfil-nombre" id="perfil-nombre"></h2>
+                <p class="perfil-handle" id="perfil-handle"></p>
+                <p class="perfil-bio" id="perfil-bio" hidden></p>
+
+                <ul class="perfil-metricas">
+                    <li><strong id="metrica-pines">0</strong>Publicaciones</li>
+                    <li><strong id="metrica-likes">0</strong>Likes recibidos</li>
+                </ul>
+            </section>
+
+            <!-- seccion de publicaciones del usuario -->
+            <section aria-label="Publicaciones del usuario">
+                <h3 class="perfil-titulo-seccion">Publicaciones</h3>
+
+                <!-- estado vacio, se muestra si el usuario no tiene pines publicos -->
+                <p id="estado-vacio" class="estado-mensaje" hidden>
+                    Este usuario todavia no tiene publicaciones.
+                </p>
+
+                <!-- grilla de pines, reutiliza la tarjeta del feed -->
+                <ul class="grilla-pines" id="grilla-pines"></ul>
+            </section>
+
+        </section>
+
+    </main>
+
+    <footer class="footer-principal">
+        <p>Visor &copy; 2026 - Proyecto Integrador UIDE</p>
+    </footer>
+
+    <!-- jquery local primero, luego api, header y el script propio del perfil -->
+    <script src="../js/lib/jquery-3.7.1.min.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/usuario.js"></script>
+
+</body>
+
+</html>

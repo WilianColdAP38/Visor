@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor - Inicio</title>
+    <link rel="stylesheet" href="../estilos/base.css">
+    <link rel="stylesheet" href="../estilos/components.css">
+    <link rel="stylesheet" href="../estilos/index.css">
+</head>
+
+<body>
+
+    <!-- Header principal con marca, buscador y acciones de sesion -->
+    <header class="header-principal">
+
+        <a href="index.html" class="marca header-logo">
+            <h1>Visor</h1>
+        </a>
+
+        <!-- Buscador del feed, usa <search> que es el elemento semantico HTML5 -->
+        <search class="buscador" role="search">
+            <label for="campo-busqueda" class="sr-solo">Buscar pines</label>
+            <input type="search" id="campo-busqueda" placeholder="Buscar ideas, tags o titulos"
+                autocomplete="off">
+        </search>
+
+        <!-- Nav de acciones de sesion, el contenido lo pinta header.js -->
+        <nav class="nav-sesion" aria-label="Acciones de usuario">
+            <ul id="acciones-auth" class="acciones-auth"></ul>
+            <div id="menu-usuario" class="menu-usuario" hidden></div>
+        </nav>
+
+    </header>
+
+    <!-- Contenido principal del feed -->
+    <main class="contenido-principal">
+
+        <!-- Barra de categorias para filtrar el feed -->
+        <section class="barra-categorias" aria-label="Filtrar por categoria">
+            <ul id="lista-categorias" class="lista-categorias"></ul>
+        </section>
+
+        <!-- Estado de carga, se oculta cuando llegan los pines -->
+        <p id="estado-cargando" class="estado-mensaje">Cargando pines...</p>
+
+        <!-- Estado vacio, se muestra cuando no hay resultados -->
+        <p id="estado-vacio" class="estado-mensaje" hidden>
+            No hay pines que coincidan con tu busqueda.
+        </p>
+
+        <!-- Galeria de pines, masonry con CSS columns -->
+        <section class="galeria-pines" aria-label="Galeria de publicaciones">
+            <ul id="lista-pines" class="lista-pines"></ul>
+        </section>
+
+    </main>
+
+    <footer class="footer-principal">
+        <p>Visor &copy; 2026 - Proyecto Integrador UIDE</p>
+    </footer>
+
+    <!-- Scripts en orden de dependencia -->
+    <script src="../js/lib/jquery-3.7.1.min.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/index.js"></script>
+
+</body>
+
+</html>

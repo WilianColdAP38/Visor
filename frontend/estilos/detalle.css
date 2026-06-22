@@ -1,0 +1,295 @@
+/* VISOR - detalle.css */
+/* estilos propios del detalle de un pin */
+
+.detalle-main {
+    flex: 1;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+/* tarjeta principal, en movil va en columna */
+.detalle-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--fondo-tarjeta);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-hover);
+    overflow: hidden;
+}
+
+/* columna de la imagen */
+.detalle-imagen {
+    width: 100%;
+    background-color: var(--fondo-input);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detalle-imagen img {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+}
+
+/* columna de info */
+.detalle-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.5rem;
+}
+
+/* tags como chips */
+.detalle-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.detalle-tags li {
+    padding: 0.25rem 0.7rem;
+    background-color: var(--fondo-input);
+    border-radius: var(--radio-input);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--texto-suave);
+}
+
+.detalle-encabezado h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.detalle-descripcion {
+    color: var(--texto-suave);
+    font-size: 0.95rem;
+}
+
+/* autor */
+.detalle-autor {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--borde);
+    border-bottom: 1px solid var(--borde);
+}
+
+.autor-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--fondo-input);
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.autor-usuario {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--texto);
+}
+
+.autor-usuario:hover {
+    color: var(--acento);
+}
+
+.autor-fecha {
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+}
+
+/* acciones (like) */
+.detalle-acciones {
+    display: flex;
+    align-items: center;
+}
+
+.btn-like {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.9rem;
+    background-color: var(--fondo-input);
+    border-radius: var(--radio-input);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--texto);
+    transition: background-color var(--transicion);
+}
+
+.btn-like:hover {
+    background-color: var(--fondo-hover);
+}
+
+.like-icono {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* cuando el pin ya tiene mi like, pinto el corazon de rojo */
+.btn-like[aria-pressed="true"] .like-icono {
+    color: var(--acento);
+}
+
+/* comentarios */
+.detalle-comentarios h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+}
+
+.form-comentario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-comentario input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.7rem 1rem;
+    background-color: var(--fondo-input);
+    border: 2px solid transparent;
+    border-radius: var(--radio-input);
+    font-size: 0.95rem;
+    font-family: inherit;
+    /* sin esto el texto que escribo hereda un color oscuro y no se ve sobre el fondo */
+    color: var(--texto);
+}
+
+/* el placeholder en un tono mas suave para diferenciarlo de lo que escribo */
+.form-comentario input::placeholder {
+    color: var(--texto-suave);
+}
+
+.form-comentario input:focus {
+    outline: none;
+    background-color: var(--fondo-tarjeta);
+    border-color: var(--texto);
+}
+
+.form-comentario .btn-primario {
+    padding: 0.7rem 1.25rem;
+    font-size: 0.9rem;
+}
+
+/* el contador de caracteres ocupa toda la fila debajo del input */
+.contador-chars {
+    flex-basis: 100%;
+    font-size: 0.75rem;
+    color: var(--texto-suave);
+    text-align: right;
+}
+
+.aviso-login {
+    font-size: 0.9rem;
+    color: var(--texto-suave);
+    margin-bottom: 1rem;
+}
+
+.aviso-login a {
+    color: var(--acento);
+    font-weight: 600;
+}
+
+.lista-comentarios {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* cada comentario */
+.comentario {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.comentario-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--fondo-input);
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.comentario-cuerpo {
+    flex: 1;
+}
+
+.comentario-usuario {
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.comentario-texto {
+    font-size: 0.9rem;
+    color: var(--texto);
+    margin: 0.15rem 0;
+    word-break: break-word;
+}
+
+.comentario-fecha {
+    font-size: 0.75rem;
+    color: var(--texto-suave);
+}
+
+.comentarios-vacio {
+    font-size: 0.9rem;
+    color: var(--texto-suave);
+}
+
+/* 404 */
+.detalle-404 {
+    text-align: center;
+    padding: 4rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.detalle-404 .btn-primario {
+    margin-top: 0.5rem;
+    max-width: 220px;
+}
+
+/* MEDIA QUERIES */
+
+@media (min-width: 600px) {
+    .detalle-main {
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* en desktop paso a 2 columnas, imagen a la izquierda e info a la derecha */
+@media (min-width: 960px) {
+    .detalle-card {
+        flex-direction: row;
+    }
+
+    .detalle-imagen {
+        flex: 1;
+        max-height: none;
+    }
+
+    .detalle-imagen img {
+        max-height: 80vh;
+    }
+
+    .detalle-info {
+        width: 420px;
+        flex-shrink: 0;
+        padding: 2rem;
+        overflow-y: auto;
+        max-height: 80vh;
+    }
+}
