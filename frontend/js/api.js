@@ -4,7 +4,7 @@
 (function (window) {
     "use strict";
 
-    const BASE_URL = "http://localhost:8000";
+    const BASE_URL = "";
 
     const KEY_TOKEN = "visor_token";
     const KEY_USUARIO = "visor_usuario";
