@@ -1,19 +1,47 @@
-# Visor · Aplicación web multimedia (estilo Pinterest)
+# Visor
 
-Visor es una aplicación web donde los usuarios se registran, inician sesión, suben imágenes y exploran un feed en mosaico. El **backend** (FastAPI + SQLite) expone una API; el **frontend** (HTML, CSS y JavaScript con jQuery) la consume. Las imágenes **no** se guardan en la base de datos: viven en un bucket privado de **Amazon S3** y se sirven con **URLs prefirmadas** temporales.
+Aplicacion web multimedia tipo Pinterest desarrollada como Proyecto Integrador de 4to nivel de Sistemas (UIDE), que articula tres materias: **Programacion Web**, **Gestion Cloud** y **Etica**.
 
-> Proyecto Integrador · 4to Semestre · Gestión de Servicios Cloud (AWS) · UIDE
-> Autores: Wilian Jami, Omar Pacheco, Erick Gualli — Quito, 2026
+Permite a los usuarios registrarse, iniciar sesion, explorar un feed en mosaico con categorias y busqueda, ver el detalle de cada pin, comentar y dar like. El contenido multimedia se almacena en **AWS S3** (bucket privado) y se sirve mediante **URLs prefirmadas**, lo que constituye el mecanismo etico-tecnico central del proyecto.
 
 ---
 
-## Stack
+## Link publico de la aplicacion
 
-| Capa | Tecnologías |
-|---|---|
-| Backend | FastAPI, SQLModel, SQLite, bcrypt, python-jose (JWT HS256), boto3, uvicorn |
-| Frontend | HTML, CSS y JavaScript con jQuery 3.7.1 (local) |
-| Nube | Amazon S3 (`us-east-2`) e IAM |
+**http://3.150.90.185:8000/**
+
+La aplicacion completa (frontend + API) corre desde una instancia EC2 Ubuntu 24.04 en la region us-east-2. El bucket de medios `visor-media-prod` provee las imagenes a traves de URLs prefirmadas con expiracion de 3600 segundos.
+
+Usuarios de prueba (sembrados):
+
+| Usuario        | Password      | Rol   |
+|----------------|---------------|-------|
+| `elianjami`    | `admin12345`  | ADMIN |
+| `ana_paisajes` | `ana123456`   | USER  |
+| `chef_dario`   | `dario12345`  | USER  |
+
+---
+
+## Arquitectura desplegada
+
+```
+Navegador del usuario
+        |
+        v
+  EC2 Ubuntu (us-east-2)  ---->  Sirve frontend estatico (HTML, CSS, JS)
+  3.150.90.185:8000              Expone la API FastAPI
+        |
+        v  (boto3, credenciales IAM)
+  S3 visor-media-prod           Almacena pines/ y avatares/
+                                Privado, sin acceso publico
+                                Sirve via URLs prefirmadas (3600s)
+```
+
+- **Frontend:** HTML semantico + CSS vanilla + JS vanilla + jQuery 3.7.1 local. Cero frameworks. Servido por FastAPI mediante `StaticFiles` desde las rutas `/html`, `/estilos` y `/js`.
+- **Backend:** FastAPI + SQLModel + SQLite + bcrypt + JWT. Routers separados por recurso (usuarios, pines, categorias, comentarios, likes).
+- **Cloud:** Bucket S3 privado `visor-media-prod` con SSE-S3 y versionado. Usuario IAM unico `wilian-visor-app-s3` con politica `VisorAppS3` (solo `s3:PutObject` y `s3:GetObject` sobre el bucket). Sin acceso a consola.
+- **Persistencia:** SQLite local en `db.sqlite3` con 3 usuarios y 30 pines reales sembrados (6 categorias: Arte, Formula 1, Futbol, Motos, Muay Thai, Naturaleza).
+- **Despliegue:** EC2 t3.micro con Elastic IP, security group con SSH restringido a la IP del desarrollador y puerto 8000 abierto. Proceso uvicorn corriendo dentro de `tmux` para sobrevivir al cierre de la sesion SSH.
 
 ---
 
@@ -21,147 +49,242 @@ Visor es una aplicación web donde los usuarios se registran, inician sesión, s
 
 ```
 Visor/
-├── backend/
-│   ├── app/
-│   │   ├── routers/        # usuarios, pines, categorias, comentarios, likes
-│   │   ├── auth.py         # JWT y dependencias de sesión
-│   │   └── config.py       # lee y valida las variables del .env
-│   ├── models.py           # modelos de datos (SQLModel)
-│   ├── db.py               # conexión a SQLite
-│   ├── main.py             # punto de entrada de la API + CORS
-│   ├── seed.py             # poblado inicial (3 usuarios + 30 pines)
-│   ├── requirements.txt    # dependencias
-│   ├── .env                # credenciales (NO se versiona)
-│   ├── .env.example        # plantilla de variables
-│   └── db.sqlite3          # base local (NO se versiona)
-└── frontend/
-    ├── estilos/            # hojas de estilo CSS
-    ├── html/               # index, login, register, detalle, usuario
-    └── js/                 # scripts + js/lib/ (jQuery)
+|-- backend/
+|   |-- app/
+|   |   |-- routers/         # usuarios, pines, categorias, comentarios, likes
+|   |   |-- auth.py          # JWT y dependencias de sesion
+|   |   `-- config.py        # lee y valida variables del .env
+|   |-- models.py            # modelos SQLModel
+|   |-- db.py                # conexion a SQLite y lifespan
+|   |-- main.py              # punto de entrada API + StaticFiles del front
+|   |-- seed.py              # poblado inicial (3 usuarios + 30 pines)
+|   |-- requirements.txt
+|   |-- .env.example         # plantilla de variables (sin secretos)
+|   `-- (.env y db.sqlite3 NO se versionan)
+`-- frontend/
+    |-- estilos/             # base, components, index, detalle, auth, usuario
+    |-- html/                # index, login, register, detalle, usuario
+    `-- js/                  # api, header, index, detalle, auth + lib/jquery
 ```
 
-El `.gitignore` excluye `.env`, `venv/` y `db.sqlite3`. **Ninguna clave secreta llega al repositorio.**
+---
+
+## Cambios incluidos en el despliegue final
+
+### 1. `backend/main.py`
+
+- Se elimina el `app.mount("/", StaticFiles(...))` original que interceptaba todas las rutas y devolvia 404 al feed.
+- Se montan tres rutas estaticas separadas que respetan los `href` relativos del HTML:
+  - `/html` para los archivos HTML (con `html=True` para resolver `index.html`).
+  - `/estilos` para los CSS.
+  - `/js` para los scripts.
+- Se agrega un endpoint `GET /` que redirige a `/html/index.html`, de modo que la raiz del dominio carga directamente el feed.
+- Se conserva `GET /api` como ping de verificacion.
+- Se agrega el origen del bucket S3 estatico en la lista de `allow_origins` por si se utiliza con Live Server en local.
+
+### 2. `frontend/js/api.js`
+
+- `BASE_URL` cambia de `"http://localhost:8000"` a cadena vacia `""`.
+- Esto convierte todas las llamadas en rutas relativas al origen actual, por lo que el mismo codigo funciona tanto en local (`localhost:8000`) como en EC2 (`3.150.90.185:8000`) sin tocar la configuracion.
+
+### 3. Despliegue en EC2
+
+- Instancia `visor-server` (t3.micro, Ubuntu 24.04, us-east-2c).
+- Elastic IP asociada para que la URL publica no cambie al reiniciar.
+- Security group `visor-api-sg`: SSH (22) restringido a la IP del desarrollador, TCP (8000) abierto a `0.0.0.0/0` para la API publica.
+- Proceso uvicorn corriendo en sesion `tmux` llamada `visor`, lo que permite cerrar SSH sin tumbar la API.
 
 ---
 
-## Requisitos previos
+## Como replicar el proyecto en otra maquina (Windows)
 
-- **Python 3.11 o superior**
-- **Git**
-- Un servidor estático para el frontend (la extensión **Live Server** de VS Code, puerto `5500`, es la usada en el proyecto)
-- Credenciales del usuario IAM `wilian-visor-app-s3` (Access Key ID y Secret Access Key). La infraestructura AWS —bucket `visor-media-prod`, política de mínimo privilegio, etc.— debe estar creada según el Manual Técnico Cloud.
+### Requisitos previos
 
----
-
-## Puesta en marcha local
+- Python 3.11 o superior
+- Git
+- VS Code o cualquier editor
+- (Opcional) Live Server para abrir el frontend en local en el puerto 5500
 
 ### 1. Clonar el repositorio
 
-```bash
-git clone https://github.com/WilianColdAP38/Visor
-cd Visor/backend
+```powershell
+cd "C:\ruta\donde\quieres\el\proyecto"
+git clone https://github.com/WilianColdAP38/Visor.git
+cd Visor\backend
 ```
 
-### 2. Entorno virtual e instalación de dependencias
+### 2. Crear y activar entorno virtual
 
-```bash
+```powershell
 python -m venv venv
+venv\Scripts\activate
+```
 
-# Activar el entorno
-venv\Scripts\activate        # Windows
-# source venv/bin/activate   # Linux / macOS
+### 3. Instalar dependencias
 
+```powershell
 pip install -r requirements.txt
 ```
 
-### 3. Configurar el `.env`
+### 4. Configurar variables de entorno
 
-Copia `.env.example` como `.env` y rellena los valores reales del usuario `wilian-visor-app-s3`:
-
-```bash
-copy .env.example .env       # Windows
-# cp .env.example .env       # Linux / macOS
+```powershell
+copy .env.example .env
 ```
 
-Contenido de `.env.example`:
+Editar `.env` y completar:
 
 ```env
-# --- App ---
-APP_NAME=Visor API
-APP_ENV=development
+SECRET_KEY=una_cadena_larga_y_aleatoria_para_jwt
 
-# --- Seguridad / JWT ---
-SECRET_KEY=<genera_una_clave_larga_y_aleatoria>
-JWT_ALGORITHM=HS256
-JWT_EXPIRE_MINUTES=180
-
-# --- AWS (usuario wilian-visor-app-s3) ---
 AWS_REGION=us-east-2
-AWS_ACCESS_KEY_ID=AKIA...
-AWS_SECRET_ACCESS_KEY=<clave_secreta_generada_en_IAM>
-
-# nombre del bucket privado de imágenes
+AWS_ACCESS_KEY_ID=tu_access_key
+AWS_SECRET_ACCESS_KEY=tu_secret_key
 S3_BUCKET_NAME=visor-media-prod
 ```
 
-> ⚠️ El `.env` **nunca** se sube al repositorio. La región debe coincidir con la del bucket (`us-east-2`).
-> ⚠️ El `.env` se lee **solo al arrancar**. Si lo editas con el servidor encendido, reinícialo a mano: `--reload` recarga el código, no las variables de entorno.
+Las credenciales AWS deben corresponder a un usuario IAM con permisos `s3:PutObject` y `s3:GetObject` sobre el bucket configurado.
 
-### 4. Poblar la base de datos
+### 5. Sembrar la base de datos
 
-El script crea las tablas e inserta datos de ejemplo (3 usuarios y 30 pines reales con sus claves de S3). Se ejecuta **una sola vez**:
+Solo la primera vez, despues de levantar la API una vez para que se creen las tablas:
 
-```bash
+```powershell
 python seed.py
 ```
 
-Usuarios que crea el seed: **`elianjami`** (admin), **`ana_paisajes`** y **`chef_dario`**. La contraseña está definida dentro de `seed.py` (revísala ahí para iniciar sesión).
+Esto crea 3 usuarios y 10 pines de ejemplo. Los 30 pines reales con keys de S3 forman parte del `db.sqlite3` de produccion y no se replican con `seed.py` (es esperado: el seed publico usa URLs de placeholder).
 
-> Si la base ya tiene usuarios, el seed se detiene. Para re-sembrar desde cero, borra `db.sqlite3` de la carpeta `backend/` y vuelve a ejecutarlo.
+### 6. Levantar la API
 
-### 5. Levantar el backend (FastAPI)
-
-```bash
-set PYTHONIOENCODING=utf-8                 # Windows: evita errores de acentos en consola
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```powershell
+$env:PYTHONIOENCODING="utf-8"; uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Espera el mensaje `Application startup complete`. La documentación interactiva queda en **http://127.0.0.1:8000/docs**.
+### 7. Abrir la aplicacion
 
-### 6. Servir el frontend y probar
+En el navegador: **http://localhost:8000/**
 
-Con el backend en el puerto **8000**, sirve la carpeta `frontend/` con **Live Server** (puerto `5500`). El backend ya autoriza ese origen en su configuración de **CORS**.
+La raiz redirige automaticamente a `/html/index.html` y se carga el feed. Tambien estan disponibles:
 
-Abre `frontend/html/index.html` desde Live Server, inicia sesión con `elianjami` y comprueba que el feed carga las imágenes servidas desde S3.
-
-Flujo de prueba completo: registrar usuario → iniciar sesión → publicar un pin con imagen → verlo aparecer en el feed.
-
----
-
-## Cómo funciona la integración con S3 (resumen)
-
-- **Subida** (`POST /pines`): el backend valida sesión (JWT) y archivo (solo `jpg/png/webp`, máx. 5 MB), sube el objeto con boto3 al prefijo `pines/{uuid}-{archivo}` y guarda en SQLite **la clave del objeto**, no una URL.
-- **Lectura** (`GET /pines`): por cada clave, el backend genera una **URL prefirmada** de solo lectura con caducidad corta (1 h). El navegador carga la imagen por ese enlace temporal.
-- **Privacidad verificable**: abrir la URL directa del objeto, sin firmar, devuelve **Access Denied**. Esa es la prueba de que el bucket es privado.
+- `http://localhost:8000/docs` — Swagger UI con todos los endpoints.
+- `http://localhost:8000/api` — ping de verificacion.
+- `http://localhost:8000/pines/` — JSON con los pines del feed.
 
 ---
 
-## Problemas frecuentes
+## Como replicar el despliegue en AWS (EC2 + S3)
 
-| Síntoma | Causa probable | Solución |
-|---|---|---|
-| `InvalidAccessKeyId` | Quedaron los `<...>` de la plantilla en el `.env` | Pega las claves reales sin los signos `<>` |
-| El feed no muestra imágenes | Faltan credenciales en `.env` o región incorrecta | Revisa `AWS_*` y que `AWS_REGION=us-east-2` |
-| Cambié el `.env` y no surte efecto | El `.env` solo se lee al arrancar | Reinicia uvicorn manualmente |
-| El frontend carga sin estilos | Rutas relativas rotas al servir | Sirve respetando la estructura de carpetas (`html/`, `estilos/`, `js/`) |
-| Acentos rotos en consola (Windows) | Codificación | `set PYTHONIOENCODING=utf-8` antes de uvicorn |
+### A. Bucket S3 de medios
+
+1. Crear bucket `visor-media-prod` en `us-east-2`.
+2. Mantener bloqueado el acceso publico (Block all public access activado).
+3. Habilitar SSE-S3 y versionado.
+4. Crear los prefijos (carpetas) `pines/` y `avatares/`.
+
+### B. Usuario IAM
+
+1. Crear politica `VisorAppS3` con el JSON minimo:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject"],
+      "Resource": "arn:aws:s3:::visor-media-prod/*"
+    }
+  ]
+}
+```
+
+2. Crear usuario IAM `wilian-visor-app-s3` sin acceso a consola.
+3. Adjuntar la politica `VisorAppS3`.
+4. Generar par de claves de acceso (Access Key ID + Secret) tipo "Outside AWS".
+
+### C. Instancia EC2
+
+1. Lanzar instancia Ubuntu 24.04 LTS, tipo `t3.micro` en `us-east-2`.
+2. Security group: SSH (22) desde la IP del desarrollador, TCP personalizado (8000) desde `0.0.0.0/0`.
+3. Asignar y asociar una Elastic IP a la instancia.
+4. Conectarse por SSH con el `.pem` descargado:
+
+```powershell
+ssh -i visor-key.pem ubuntu@TU_IP_ELASTICA
+```
+
+5. Dentro de la EC2:
+
+```bash
+sudo apt update
+sudo apt install -y python3-venv python3-pip git tmux
+git clone https://github.com/WilianColdAP38/Visor.git
+cd Visor/backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+6. Copiar `.env` y `db.sqlite3` desde la maquina local (en otra ventana de PowerShell):
+
+```powershell
+scp -i visor-key.pem .env ubuntu@TU_IP_ELASTICA:~/Visor/backend/.env
+scp -i visor-key.pem db.sqlite3 ubuntu@TU_IP_ELASTICA:~/Visor/backend/db.sqlite3
+```
+
+7. Levantar la API dentro de tmux para que sobreviva al cierre de SSH:
+
+```bash
+tmux new -s visor
+source venv/bin/activate
+PYTHONIOENCODING=utf-8 uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+Luego `Ctrl+B` y `D` para detachar. Para reconectarse: `tmux attach -t visor`.
+
+8. La aplicacion queda disponible en `http://TU_IP_ELASTICA:8000/`.
 
 ---
 
-## Despliegue en línea
+## Endpoints principales
 
-El frontend se publica como sitio estático en un **segundo bucket público** (p. ej. `visor-frontend-prod`) con hosting estático y política de lectura pública. El bucket de imágenes (`visor-media-prod`) sigue privado. El procedimiento completo está en el **Capítulo 7** del Manual Técnico Cloud.
+| Metodo | Ruta                              | Descripcion                                |
+|--------|-----------------------------------|--------------------------------------------|
+| POST   | `/usuarios/register`              | Registrar nuevo usuario                    |
+| POST   | `/usuarios/login`                 | Login JSON, devuelve JWT                   |
+| POST   | `/usuarios/token`                 | Login OAuth2 para Swagger Authorize        |
+| GET    | `/usuarios/me`                    | Datos del usuario autenticado              |
+| GET    | `/pines/`                         | Feed con URLs prefirmadas de S3            |
+| POST   | `/pines/`                         | Crear pin (sube imagen a S3 via boto3)     |
+| GET    | `/pines/{id}`                     | Detalle de un pin                          |
+| GET    | `/categorias/`                    | Lista de categorias                        |
+| GET    | `/pines/{id}/comentarios`         | Comentarios de un pin                      |
+| POST   | `/pines/{id}/comentarios`         | Crear comentario (requiere sesion)         |
+| POST   | `/pines/{id}/like`                | Dar/quitar like (requiere sesion)          |
 
-## Ramas
+Documentacion interactiva: `/docs`.
 
-`main` (estable) · `develop` (en curso) · `feature/programacion-web` · `feature/cloud` · `feature/etica`
+---
+
+## Stack
+
+| Capa            | Tecnologia                                                    |
+|-----------------|---------------------------------------------------------------|
+| Frontend        | HTML5 semantico, CSS vanilla, JS vanilla, jQuery 3.7.1 local  |
+| Backend         | FastAPI, SQLModel, Pydantic                                   |
+| Base de datos   | SQLite                                                        |
+| Autenticacion   | bcrypt + JWT (python-jose)                                    |
+| Almacenamiento  | AWS S3 (boto3) con URLs prefirmadas                           |
+| Servidor        | Uvicorn en EC2 Ubuntu 24.04                                   |
+| Region AWS      | us-east-2                                                     |
+
+---
+
+## Equipo
+
+- **Wilian Elian Jami** — Backend, frontend, integracion cloud, etica.
+- **Omar Pacheco** — Commits del grupo en GitHub.
+- **Erick Gualli** — Active Directory.
+
+Proyecto Integrador 4to nivel, Universidad Internacional del Ecuador (UIDE), 2026.
