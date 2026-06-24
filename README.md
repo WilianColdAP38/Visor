@@ -69,32 +69,7 @@ Visor/
 
 ---
 
-## Cambios incluidos en el despliegue final
 
-### 1. `backend/main.py`
-
-- Se elimina el `app.mount("/", StaticFiles(...))` original que interceptaba todas las rutas y devolvia 404 al feed.
-- Se montan tres rutas estaticas separadas que respetan los `href` relativos del HTML:
-  - `/html` para los archivos HTML (con `html=True` para resolver `index.html`).
-  - `/estilos` para los CSS.
-  - `/js` para los scripts.
-- Se agrega un endpoint `GET /` que redirige a `/html/index.html`, de modo que la raiz del dominio carga directamente el feed.
-- Se conserva `GET /api` como ping de verificacion.
-- Se agrega el origen del bucket S3 estatico en la lista de `allow_origins` por si se utiliza con Live Server en local.
-
-### 2. `frontend/js/api.js`
-
-- `BASE_URL` cambia de `"http://localhost:8000"` a cadena vacia `""`.
-- Esto convierte todas las llamadas en rutas relativas al origen actual, por lo que el mismo codigo funciona tanto en local (`localhost:8000`) como en EC2 (`3.150.90.185:8000`) sin tocar la configuracion.
-
-### 3. Despliegue en EC2
-
-- Instancia `visor-server` (t3.micro, Ubuntu 24.04, us-east-2c).
-- Elastic IP asociada para que la URL publica no cambie al reiniciar.
-- Security group `visor-api-sg`: SSH (22) restringido a la IP del desarrollador, TCP (8000) abierto a `0.0.0.0/0` para la API publica.
-- Proceso uvicorn corriendo en sesion `tmux` llamada `visor`, lo que permite cerrar SSH sin tumbar la API.
-
----
 
 ## Como replicar el proyecto en otra maquina (Windows)
 
@@ -283,8 +258,8 @@ Documentacion interactiva: `/docs`.
 
 ## Equipo
 
-- **Wilian Elian Jami** — Backend, frontend, integracion cloud, etica.
-- **Omar Pacheco** — Commits del grupo en GitHub.
-- **Erick Gualli** — Active Directory.
+- **Wilian Elian Jami** 
+- **Omar Pacheco** 
+- **Erick Gualli** 
 
-Proyecto Integrador 4to nivel, Universidad Internacional del Ecuador (UIDE), 2026.
+Proyecto Integrador 4to semestre, Universidad Internacional del Ecuador (UIDE), 2026.
